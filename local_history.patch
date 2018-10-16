@@ -1,0 +1,121 @@
+Index: app/src/main/java/com/example/l/netdisk/FreshBangumiList.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/l/netdisk/FreshBangumiList.java	(date 1539531080000)
++++ app/src/main/java/com/example/l/netdisk/FreshBangumiList.java	(date 1539531080000)
+@@ -17,6 +17,8 @@
+ import java.io.IOException;
+ import java.io.InputStream;
+ 
++import okhttp3.Call;
++import okhttp3.Callback;
+ import okhttp3.OkHttpClient;
+ import okhttp3.Request;
+ import okhttp3.Response;
+@@ -27,7 +29,6 @@
+     final static int SUCCESSED = 3;
+ 
+ 
+-
+     @Override
+     protected void onPreExecute() {
+         if (LitePal.isExist(Bangumi.class))
+@@ -44,7 +45,7 @@
+             //String[] weekday = new String[]{"Mon","Tue","Wed","Thu","Fri","Sat","Sun"};
+             String filePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getPath();
+             int week = 0;
+-            int fileName = 0;
++
+             //加载一周的每一天
+             for (int i = 0; i<7;i++){
+                 Elements dayList = bangumiHtml.select("li.week").select("dd."+MainActivity.weekday[week]);
+@@ -57,16 +58,41 @@
+                         //Log.d("dbisexi1112222222",element.text());
+                     String picUrlTemp = element.attr("style");
+                     String picUrl = picUrlTemp.substring(picUrlTemp.indexOf("lain"),picUrlTemp.lastIndexOf("\'"));
+-                    String dir = filePath+"/"+MainActivity.weekday[week];
++                    final String dir = filePath+"/"+MainActivity.weekday[week];
++                    final String fileName = picUrlTemp.substring(picUrlTemp.lastIndexOf("/"),picUrlTemp.lastIndexOf("\'"));
++                    final String bangumiName =   element.text();
++                    final String weekd = MainActivity.weekday[week];
+                     img  = new File(dir);
+ 
+-                    Log.d("dbisexi",dir);
++                    Log.d("dbisexi",dir+"/"+fileName);
+                     img.mkdirs();
+ 
+-                    FileOutputStream fos = new FileOutputStream(dir+"/"+fileName+".jpg");
++                    picDL(picUrl, new Callback() {
+ 
+-                    Log.d("dbisexi","success");
+-                    OkHttpClient client = new OkHttpClient();
++                        @Override
++                        public void onFailure(Call call, IOException e) {
++                            e.printStackTrace();
++                        }
++
++                        @Override
++                        public void onResponse(Call call, Response response) throws IOException {
++                            InputStream iss = response.body().byteStream();
++                            FileOutputStream fos = new FileOutputStream(dir+"/"+fileName);
++                            int len;
++                            byte[] b = new byte[1024];
++                            while ((len=iss.read(b))!=-1){
++                                fos.write(b,0,len);
++                            }
++                            response.close();
++                            fos.close();
++                            Bangumi bangumi = new Bangumi();
++                            bangumi.setWeek(weekd);
++                            bangumi.setName(bangumiName);
++                            bangumi.setPicPath(dir+"/"+fileName);
++                            bangumi.save();
++                        }
++                    });
++                    /*OkHttpClient client = new OkHttpClient();
+                         Request request = new Request.Builder()
+                                 .url("http://"+picUrl).build();
+                         Response response = client.newCall(request).execute();
+@@ -78,20 +104,16 @@
+                                 fos.write(b,0,len);
+                             }
+                         }
+-                        response.body().close();
+-                        fos.close();
++                        response.body().close();*/
++
++                        Log.d("dbisexi","success");
+ 
+-                    Bangumi bangumi = new Bangumi();
+-                    bangumi.setWeek(MainActivity.weekday[week]);
+-                    bangumi.setName(element.text());
+-                    bangumi.setPicPath(dir+"/"+fileName+".jpg");
+-                    bangumi.save();
+-                        fileName++;
++
+                     }
+                     week++;
+             }
+         }catch (Exception e){
+-            e.printStackTrace();//Log.d("dbisexieeeeeeee","exception");
++            e.printStackTrace();Log.d("dbisexieeeeeeee","exception");
+         }finally {
+             try{
+                 if (is!=null){
+@@ -109,6 +131,13 @@
+     @Override
+     protected void onProgressUpdate(Void... values) {
+         //fresh.fresh(MainActivity.WEEK);
+-        MainActivity.viewPager.setAdapter(new VPAdapter());
++        MainActivity.vpAdapter.notifyDataSetChanged();
++    }
++
++    private void picDL( String picUrl, Callback callback){
++        OkHttpClient client = new OkHttpClient();
++        Request request = new Request.Builder()
++                .url("http://"+picUrl).build();
++        client.newCall(request).enqueue(callback);
+     }
+ }
