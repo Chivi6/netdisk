@@ -10,6 +10,15 @@ public class Bangumi extends LitePalSupport {
 
     private String week;
 
+    private String detailUrl;
+
+    public void setDetailUrl(String detailUrl) {
+        this.detailUrl = detailUrl;
+    }
+
+    public String getDetailUrl() {
+        return detailUrl;
+    }
 
     public String getWeek() {
         return week;

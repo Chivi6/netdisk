@@ -1,6 +1,7 @@
 package com.example.l.netdisk;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -42,7 +43,19 @@ public class homeAdapter extends RecyclerView.Adapter<homeAdapter.ViewHolder> {
             context = parent.getContext();
         }
         View view =  LayoutInflater.from(context).inflate(R.layout.bangumi_item,parent,false);
-        return new ViewHolder(view);
+        final ViewHolder holder = new ViewHolder(view);
+        holder.cardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int position = holder.getAdapterPosition();
+                Bangumi bangumi = bangumiList.get(position);
+                Intent intent = new Intent(context,BangumiDetail.class);
+                intent.putExtra("Title",bangumi.getName());
+                intent.putExtra("Url",bangumi.getDetailUrl());
+                context.startActivity(intent);
+            }
+        });
+        return holder;
     }
 
     @Override

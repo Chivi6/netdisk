@@ -61,6 +61,7 @@ public class FreshBangumiList extends AsyncTask<Void,Void,Integer> {
                     final String fileName = picUrlTemp.substring(picUrlTemp.lastIndexOf("/"),picUrlTemp.lastIndexOf("\'"));
                     final String bangumiName = element.text();
                     final String weekd = MainActivity.weekday[week];
+                    final String detailUrl = element.select("a").get(0).attr("href");
                     img  = new File(dir);
 
                     Log.d("dbisexi",dir+fileName);
@@ -98,6 +99,7 @@ public class FreshBangumiList extends AsyncTask<Void,Void,Integer> {
                             bangumi.setWeek(day);
                             bangumi.setName(bname);
                             bangumi.setPicPath(path);
+                            bangumi.setDetailUrl(detailUrl);
                             bangumi.save();
                             publishProgress();
                             //Log.d("numbersss",""+path);
