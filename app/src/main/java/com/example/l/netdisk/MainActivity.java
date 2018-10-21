@@ -110,12 +110,19 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        navigationView.setCheckedItem(R.id.Mon);
+        navigationView.setCheckedItem(R.id.search_activity);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 //WEEK = item.getTitle().toString();
                 //fresh.fresh(WEEK);
+                switch (item.getItemId()){
+                    case  R.id.search_activity:
+                    Intent intent = new Intent(MainActivity.this,VedioDLUrlActivity.class);
+                    startActivity(intent);
+                    break;
+                    default:
+                }
                 layout.closeDrawers();
                 return  true;
             }

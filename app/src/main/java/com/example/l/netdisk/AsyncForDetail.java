@@ -1,5 +1,6 @@
 package com.example.l.netdisk;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.support.v7.widget.GridLayoutManager;
@@ -7,6 +8,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -47,12 +49,12 @@ public class AsyncForDetail extends AsyncTask<String,Integer,Integer> {
                 bgmDetail.setJianjie(jianJieE.get(0).text());
             else
                 bgmDetail.setJianjie("No Information");
-            Log.d("jfjfjfjfjf",bgmDetail.getJianjie());
+            //Log.d("jfjfjfjfjf",bgmDetail.getJianjie());
 
             File f = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getPath()+"/Detail");
             DeleteDir(f);
 
-            Log.d("jfjf",""+f.list().length);
+            //Log.d("jfjf",""+f.list().length);
 
 
             if (bangumiDetail.select("ul.browserMedium").select("li").size()>0){
@@ -128,7 +130,7 @@ public class AsyncForDetail extends AsyncTask<String,Integer,Integer> {
                         cast.setCastPicPath(picPath);
                         publishProgress(castOK);
                     }else {
-                        Log.d("jfjf",cast.getCastPicUrl());
+                        //Log.d("jfjf",cast.getCastPicUrl());
                         PicDL(cast.getCastPicUrl(), new Callback() {
                             FileOutputStream fileOutputStream = new FileOutputStream(picPath);
                             @Override
@@ -174,7 +176,7 @@ public class AsyncForDetail extends AsyncTask<String,Integer,Integer> {
                 textView.setText(bgmDetail.getJianjie());
                 break;
             case castOK:
-                Log.d("jfjfjfjfffff",casts.get(0).getCastName());
+                //Log.d("jfjfjfjfffff",casts.get(0).getCastName());
                 RecyclerView recyclerView = (RecyclerView) BangumiDetail.views.get(1).findViewById(R.id.cast_recyc);
                 RecyclerView.LayoutManager manager = new GridLayoutManager(recyclerView.getContext(),2);
                 StaffRecycAdapter adapter = new StaffRecycAdapter(casts);

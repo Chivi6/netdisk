@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toolbar;
 
@@ -34,7 +35,8 @@ public class BangumiDetail extends AppCompatActivity {
         cover = findViewById(R.id.bgm_cover);
         FloatingActionButton fab = findViewById(R.id.freshFAB);
         Intent intent = getIntent();
-        collapsingToolbarLayout.setTitle(intent.getStringExtra("Title"));
+        final String title = intent.getStringExtra("Title");
+        collapsingToolbarLayout.setTitle(title);
         final String detailUrl = intent.getStringExtra("Url");
 
         setSupportActionBar(toolbar);
@@ -48,6 +50,15 @@ public class BangumiDetail extends AppCompatActivity {
         View view2 = View.inflate(BangumiDetail.this,R.layout.staff,null);
         View view1 = View.inflate(BangumiDetail.this,R.layout.detail,null);
 
+        Button button = view1.findViewById(R.id.DLUrl);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(BangumiDetail.this,VedioDLUrlActivity.class);
+                intent.putExtra("NS",title.substring(0,title.indexOf(" ")));
+                startActivity(intent);
+            }
+        });
         views.add(view1);
         views.add(view2);
         viewPager.setAdapter(new DetailVPAdapter(views));
