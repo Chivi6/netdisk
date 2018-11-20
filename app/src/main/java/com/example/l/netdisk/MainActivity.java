@@ -1,6 +1,9 @@
 package com.example.l.netdisk;
 
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.ServiceConnection;
+import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -39,6 +42,18 @@ public class MainActivity extends AppCompatActivity {
     //static VPAdapter vpAdapter;
     static int position;
     static protected SwipeRefreshLayout refreshLayout;
+    static DLService.DLBinder dlBinder;
+    private ServiceConnection connection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            dlBinder = (DLService.DLBinder)service;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+
+        }
+    };
 
 
     /*private Fresh fresh = new Fresh() {
@@ -69,6 +84,9 @@ public class MainActivity extends AppCompatActivity {
         layout = findViewById(R.id.drawerlayout);
         NavigationView navigationView = findViewById(R.id.nav_view);
         refreshLayout = findViewById(R.id.home_refresh);
+        Intent intent = new Intent(MainActivity.this,DLService.class);
+        startService(intent);
+        bindService(intent,connection,BIND_AUTO_CREATE);
 
 
         viewPager = findViewById(R.id.dayList);
@@ -117,10 +135,14 @@ public class MainActivity extends AppCompatActivity {
                 //WEEK = item.getTitle().toString();
                 //fresh.fresh(WEEK);
                 switch (item.getItemId()){
-                    case  R.id.search_activity:
-                    Intent intent = new Intent(MainActivity.this,VedioDLUrlActivity.class);
-                    startActivity(intent);
-                    break;
+                    case R.id.search_activity:
+                        Intent intent = new Intent(MainActivity.this,VedioDLUrlActivity.class);
+                        startActivity(intent);
+                        break;
+                    case R.id.filelist_activity:
+                        Intent intent1 = new Intent(MainActivity.this,ServerFileListActivity.class);
+                        startActivity(intent1);
+                        break;
                     default:
                 }
                 layout.closeDrawers();
